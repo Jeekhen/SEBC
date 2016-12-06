@@ -18,7 +18,7 @@ $ cat /proc/sys/vm/swappiness
 Showing Mounted drives 
 
 ```
-[ec2-user@ip-172-31-1-80 ~]$ df -h
+$ df -h
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/xvda2       30G  928M   30G   4% /
 devtmpfs        7.3G     0  7.3G   0% /dev
@@ -33,22 +33,14 @@ tmpfs           1.5G     0  1.5G   0% /run/user/1000
 Disabling THP
 
 ```
-$ vi /etc/sysconfig/grub
-```
-
-Append line 'transparent_hugepage=never'  
-Reboot system
-
-Check if parameter is updated
-
-```
-$ cat /proc/cmdline
->>> BOOT_IMAGE=/boot/vmlinuz-3.10.0-327.el7.x86_64 root=UUID=379de64d-ea11-4f5b-ae6a-0aa50ff7b24d ro console=ttyS0,115200n8 console=tty0 net.ifnames=0 crashkernel=auto transparent_hugepage=never
+sudo su
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
 
 $  cat /sys/kernel/mm/transparent_hugepage/enabled
 >>> always madvise [never]
-
 ```
+ 
 Show the network attributes
 
 ```
@@ -70,22 +62,23 @@ $ip addr
 ```
 
 Checking Forward and Reverse DNS
-
+:q
 ```
 $ getent hosts edge
-172.31.1.80     edge.cloudera edge
+172.31.14.158   ip-172-31-14-158.ap-southeast-1.compute.internal edge
+
 ```
 
 Run a yum to install nslookup and then lookup
 
 ```
-$ sudo yum install bind-util
-$ nslookup ip-172-31-1-80.ap-southeast-1.compute.internal
+$ sudo yum install bind-utils
+$ nslookup ip-172-31-14-158.ap-southeast-1.compute.internal
 Server:         172.31.0.2
 Address:        172.31.0.2#53
 
 Non-authoritative answer:
-Name:   ip-172-31-1-80.ap-southeast-1.compute.internal
-Address: 172.31.1.80
+Name:   ip-172-31-14-158.ap-southeast-1.compute.internal
+Address: 172.31.14.158
 
 ```
