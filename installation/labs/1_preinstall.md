@@ -69,3 +69,23 @@ $ip addr
 	   
 ```
 
+Checking Forward and Reverse DNS
+
+```
+$ getent hosts edge
+172.31.1.80     edge.cloudera edge
+```
+
+Run a yum to install nslookup and then lookup
+
+```
+$ sudo yum install bind-util
+$ nslookup ip-172-31-1-80.ap-southeast-1.compute.internal
+Server:         172.31.0.2
+Address:        172.31.0.2#53
+
+Non-authoritative answer:
+Name:   ip-172-31-1-80.ap-southeast-1.compute.internal
+Address: 172.31.1.80
+
+```
