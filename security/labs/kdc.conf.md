@@ -1,3 +1,4 @@
+```
 [libdefaults]
 default_realm = AP-SOUTHEAST-1.COMPUTE.INTERNAL
 dns_lookup_kdc = false
@@ -31,3 +32,4 @@ admin_server = ip-172-31-14-159.ap-southeast-1.compute.internal
   max_life = 1d
   max_renewable_life = 7d
  }
+```
