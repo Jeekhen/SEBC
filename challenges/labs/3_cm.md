@@ -5,8 +5,9 @@ drwxrwxrwx   - mapred hadoop              0 2016-12-08 21:47 /user/history
 drwxrwxr-t   - hive   hive                0 2016-12-08 21:48 /user/hive
 drwxrwxr-x   - hue    hue                 0 2016-12-08 21:48 /user/hue
 drwxrwxr-x   - oozie  oozie               0 2016-12-08 21:49 /user/oozie
-drwxr-xr-x   - hdfs   supergroup          0 2016-12-08 21:53 /user/orchard
-drwxr-xr-x   - hdfs   supergroup          0 2016-12-08 21:53 /user/raffles
+drwxrwxrwx   - hdfs   supergroup          0 2016-12-08 21:53 /user/orchard
+drwxrwxrwx   - hdfs   supergroup          0 2016-12-08 21:53 /user/raffles
+
 
 ```
 
