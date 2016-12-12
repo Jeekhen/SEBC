@@ -6,8 +6,7 @@ Transparent Huge Page Compaction is enabled and can cause significant performanc
 Cloudera recommends setting /proc/sys/vm/swappiness to a maximum of 10. Current setting is 30. Use the sysctl command to change this setting at run time and edit /etc/sysctl.conf for this setting to be saved after a reboot. You can continue with installation, but Cloudera Manager might report that your hosts are unhealthy because they are swapping. The following hosts are affected: 
 
 
-
-ec2-54-169-152-238.ap-southeast-1.compute.amazonaws.com
+-------------------- Pre Configuration Setup -------------------------
 
 sudo setenforce 0
 sudo vi /etc/selinux/config
