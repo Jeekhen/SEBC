@@ -26,6 +26,8 @@ yum install bind-utils
 yum install ntp
 yum install nscd
 
+* Need to configure your NTP server if you have a local NTP
+
 systemctl start ntpd
 systemctl start nscd
 
@@ -40,8 +42,10 @@ baseurl=http://repo.mysql.com/yum/mysql-5.5-community/el/7/$basearch/
 enabled=1
 gpgcheck=0
 
+(For Client / Slave nodes)
 sudo yum install mysql
-sudo yum install mysql-server
+(For Server)
+sudo yum install mysql-server mysql
 
 tar zxvf mysql-connector-java-5.1.40.tar.gz
 sudo mkdir -p /usr/share/java/
@@ -112,15 +116,30 @@ ip-172-31-14-162.ap-southeast-1.compute.internal
 https://archive.cloudera.com/cdh5/parcels/5.8.2/
 
 ----------------------------------- MySQL replication if needed ------------------------    
+http://dev.mysql.com/doc/refman/5.7/en/replication-howto.html
 If require replication
 
+vi /etc/my.cnf
 [mysqld]
 log-bin=mysql-bin
 server-id=1
+* each server should have an unqiue server-id
 
 mysql> CREATE USER 'repl'@'%.mydomain.com' IDENTIFIED BY 'slavepass';
 mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%.mydomain.com';
+mysql> FLUSH TABLES WITH READ LOCK;
+mysql > SHOW MASTER STATUS;
 
+you should see something like this
+mysql > SHOW MASTER STATUS;
++------------------+----------+--------------+------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++------------------+----------+--------------+------------------+
+| mysql-bin.000003 | 73       | test         | manual,mysql     |
++------------------+----------+--------------+------------------+
+
+
+* On your secondary mysql server run this .....
 mysql> CHANGE MASTER TO
     ->     MASTER_HOST='master_host_name',
     ->     MASTER_USER='repl',
@@ -129,7 +148,7 @@ mysql> CHANGE MASTER TO
     ->     MASTER_LOG_POS=recorded_log_position;
 
 Slave nodes:
-mysql> Slave Start
+mysql> START SLAVE;
 
     
 -------------------------------- HDFS Terasort and Teragen (Benmarking) ----------------------------    
