@@ -5,8 +5,8 @@ Transparent Huge Page Compaction is enabled and can cause significant performanc
 
 Cloudera recommends setting /proc/sys/vm/swappiness to a maximum of 10. Current setting is 30. Use the sysctl command to change this setting at run time and edit /etc/sysctl.conf for this setting to be saved after a reboot. You can continue with installation, but Cloudera Manager might report that your hosts are unhealthy because they are swapping. The following hosts are affected: 
 
-
--------------------- Pre Configuration Setup -------------------------
+    
+-------------------- Pre Configuration Setup -------------------------   
 
 sudo setenforce 0
 sudo vi /etc/selinux/config
@@ -17,7 +17,11 @@ sudo sysctl -w vm.swappiness=1
 sudo su
 echo never > /sys/kernel/mm/transparent_hugepage/defrag
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
+sudo vi /etc/rc.local
+systemctl stop tuned
+systemctl disable tuned
 
+yum install bind-utils ntp nscd
 yum install bind-utils
 yum install ntp
 yum install nscd
@@ -27,6 +31,8 @@ systemctl start nscd
 
 getent hosts master
 nslookup ip-172-31-14-159.ap-southeast-1.compute.internal
+    
+------------------------ MySQL Installation --------------------  
 
 [mysql55-community]
 name=MySQL 5.5 Community Server
@@ -79,8 +85,8 @@ grant all on hue.* to 'hue'@'%' identified by 'secretpassword';
 create database oozie;
 grant all privileges on oozie.* to 'oozie'@'localhost' identified by 'oozie';
 grant all privileges on oozie.* to 'oozie'@'%' identified by 'oozie';
-
-
+    
+------------------------------Cloudera Manager installation -------------------    
 
 cd /etc/yum.repos.d/
 wget https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/cloudera-manager.repo
@@ -105,6 +111,7 @@ ip-172-31-14-162.ap-southeast-1.compute.internal
 
 https://archive.cloudera.com/cdh5/parcels/5.8.2/
 
+----------------------------------- MySQL replication if needed ------------------------    
 If require replication
 
 [mysqld]
@@ -121,18 +128,22 @@ mysql> CHANGE MASTER TO
     ->     MASTER_LOG_FILE='recorded_log_file_name',
     ->     MASTER_LOG_POS=recorded_log_position;
 
+Slave nodes:
+mysql> Slave Start
 
-###################### HDFS LAB ####################################
+    
+-------------------------------- HDFS Terasort and Teragen (Benmarking) ----------------------------    
 
 time hadoop jar  /opt/cloudera/parcels/CDH/lib/hadoop-0.20-mapreduce/hadoop-examples.jar teragen -Dmapred.map.tasks=4 -Dmapred.map.tasks.speculative.execution=false -Ddfs.block.size=32M 100000000 terasort-input 
 
 time hadoop jar  /opt/cloudera/parcels/CDH/lib/hadoop-0.20-mapreduce/hadoop-examples.jar terasort terasort-input /user/jeekhen
 
+------------------------------------ CDH Upgrade --------------------------------    
 
 wget https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5/
 sudo yum upgrade cloudera-manager-server cloudera-manager-daemons cloudera-manager-agent
 
-###################### Keboros ####################################
+--------------------------------------- Keboros -----------------------------------    
 
 [root@ip-172-31-14-159 ~]# id jeekhen
 uid=1002(jeekhen) gid=1002(jeekhen) groups=1002(jeekhen)
@@ -223,7 +234,7 @@ sudo service cloudera-scm-agent restart
 
 
 
-
+------------------------------------ Misc notes --------------------------    
 
 keytool -exportcert -keystore /opt/cloudera/security/jks/cmhost-keystore.jks -alias cmhost -storepass password -file node1.cer
 
