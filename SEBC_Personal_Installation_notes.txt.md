@@ -1,4 +1,4 @@
-'''
+```
 
 Transparent Huge Page Compaction is enabled and can cause significant performance problems. Run "echo never > /sys/kernel/mm/transparent_hugepage/defrag" and "echo never > /sys/kernel/mm/transparent_hugepage/enabled" to disable this, then add the same command to an init script such as /etc/rc.local so it will be set upon system reboot. The following hosts are affected:
 
@@ -257,7 +257,7 @@ sudo mv config.ini  /etc/cloudera-scm-agent/config.ini
 
 
 
-'''
+```
 
 
 
