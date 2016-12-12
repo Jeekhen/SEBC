@@ -59,6 +59,7 @@ sudo mv /var/lib/mysql/ib_logfile1 .
 sudo systemctl start mysqld
 sudo /usr/bin/mysql_secure_installation
 
+* Only if you need replication, run the below steps. ---------------------------
 mysql> CREATE USER 'repl'@'%.ap-southeast-1.compute.internal' IDENTIFIED BY 'slavepass';
 mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%.ap-southeast-1.compute.internal';
 
@@ -66,6 +67,7 @@ mysql> FLUSH TABLES WITH READ LOCK;
 mysql > SHOW MASTER STATUS;
 
 mysql> CHANGE MASTER TO MASTER_HOST='ip-172-31-14-159.ap-southeast-1.compute.internal', MASTER_USER='repl', MASTER_PASSWORD='slavepass', MASTER_LOG_FILE='mysql_binary_log.000003', MASTER_LOG_POS=1627;
+--------------------------------------------------------------------------------------
 
 create database amon DEFAULT CHARACTER SET utf8;
 grant all on amon.* TO 'amon'@'%' IDENTIFIED BY 'amon_password';
@@ -90,31 +92,8 @@ create database oozie;
 grant all privileges on oozie.* to 'oozie'@'localhost' identified by 'oozie';
 grant all privileges on oozie.* to 'oozie'@'%' identified by 'oozie';
     
-------------------------------Cloudera Manager installation -------------------    
-
-cd /etc/yum.repos.d/
-wget https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/cloudera-manager.repo
-
-change baseurl to = https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.8.2/
-
-sudo yum install oracle-j2sdk1.7
-sudo yum install cloudera-manager-daemons cloudera-manager-server
-
-/usr/share/cmf/schema/scm_prepare_database.sh mysql scm scm password
-
- sudo service cloudera-scm-server start
-
-http://ec2-54-254-178-8.ap-southeast-1.compute.amazonaws.com:7180/cmf/login
-
-
-ip-172-31-14-158.ap-southeast-1.compute.internal
-ip-172-31-14-159.ap-southeast-1.compute.internal
-ip-172-31-14-160.ap-southeast-1.compute.internal  
-ip-172-31-14-161.ap-southeast-1.compute.internal  
-ip-172-31-14-162.ap-southeast-1.compute.internal  
-
-https://archive.cloudera.com/cdh5/parcels/5.8.2/
-
+	
+	
 ----------------------------------- MySQL replication if needed ------------------------    
 http://dev.mysql.com/doc/refman/5.7/en/replication-howto.html
 If require replication
@@ -150,7 +129,26 @@ mysql> CHANGE MASTER TO
 Slave nodes:
 mysql> START SLAVE;
 
-    
+  
+------------------------------Cloudera Manager installation -------------------    
+
+cd /etc/yum.repos.d/
+wget https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/cloudera-manager.repo
+
+change baseurl to = https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.8.2/
+
+sudo yum install oracle-j2sdk1.7
+sudo yum install cloudera-manager-daemons cloudera-manager-server
+
+/usr/share/cmf/schema/scm_prepare_database.sh mysql scm scm password
+/usr/share/cmf/schema/scm_prepare_database.sh mysql scm scm password -h 192.9.202.196
+
+ sudo service cloudera-scm-server start
+
+http://ec2-54-254-178-8.ap-southeast-1.compute.amazonaws.com:7180/cmf/login
+
+https://archive.cloudera.com/cdh5/parcels/5.8.2/
+
 -------------------------------- HDFS Terasort and Teragen (Benmarking) ----------------------------    
 
 time hadoop jar  /opt/cloudera/parcels/CDH/lib/hadoop-0.20-mapreduce/hadoop-examples.jar teragen -Dmapred.map.tasks=4 -Dmapred.map.tasks.speculative.execution=false -Ddfs.block.size=32M 100000000 terasort-input 
