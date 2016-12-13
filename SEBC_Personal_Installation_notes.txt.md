@@ -57,6 +57,7 @@ sudo mv /var/lib/mysql/ib_logfile0 .
 sudo mv /var/lib/mysql/ib_logfile1 .
 
 sudo systemctl start mysqld
+sudo systemctl enable mysqld
 sudo /usr/bin/mysql_secure_installation
 
 * Only if you need replication, run the below steps. ---------------------------
@@ -67,6 +68,9 @@ mysql> FLUSH TABLES WITH READ LOCK;
 mysql > SHOW MASTER STATUS;
 
 mysql> CHANGE MASTER TO MASTER_HOST='ip-172-31-14-159.ap-southeast-1.compute.internal', MASTER_USER='repl', MASTER_PASSWORD='slavepass', MASTER_LOG_FILE='mysql_binary_log.000003', MASTER_LOG_POS=1627;
+
+On Secondary Server:
+mysql> START SLAVE;
 --------------------------------------------------------------------------------------
 
 create database amon DEFAULT CHARACTER SET utf8;
@@ -140,8 +144,8 @@ change baseurl to = https://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.8.2/
 sudo yum install oracle-j2sdk1.7
 sudo yum install cloudera-manager-daemons cloudera-manager-server
 
-/usr/share/cmf/schema/scm_prepare_database.sh mysql scm scm password
-/usr/share/cmf/schema/scm_prepare_database.sh mysql scm scm password -h 192.9.202.196
+/usr/share/cmf/schema/scm_prepare_database.sh mysql scm scm scm_password
+/usr/share/cmf/schema/scm_prepare_database.sh mysql scm scm scm_password -h 192.9.202.196
 
  sudo service cloudera-scm-server start
 
@@ -188,9 +192,6 @@ kdc file parameters;
   max_life = 1d
   max_renewable_life = 7d
   
-  
-
-
 /usr/sbin/kdb5_util create -s
 
 /usr/sbin/kadmin.local -q "addprinc jeekhen/admin"
