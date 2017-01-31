@@ -39,10 +39,12 @@ yum install bind-utils
 yum install ntp
 yum install nscd
 
-* Need to configure your NTP server if you have a local NTP
+*** Need to configure your NTP server if you have a local NTP
 
 systemctl start ntpd
+systemctl enable ntpd
 systemctl start nscd
+systemctl enable nscd
 
 getent hosts master
 nslookup ip-172-31-14-159.ap-southeast-1.compute.internal
