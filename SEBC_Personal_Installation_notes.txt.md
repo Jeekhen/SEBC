@@ -21,6 +21,19 @@ sudo vi /etc/rc.local
 systemctl stop tuned
 systemctl disable tuned
 
+--- if the above hugepage do not get turn off after reboot. Do the following
+
+sudo vi /boot/grub/grub.conf 
+-add : transparent_hugepage=never.... example below
+"GRUB_CMDLINE_LINUX="rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap vconsole.font=latarcyrheb-sun16 vconsole.keymap=us transparent_hugepage=never"
+
+Run:
+grub2-mkconfig -o /boot/grub2/grub.cfg
+
+reboot and check
+cat /sys/kernel/mm/transparent_hugepage/enabled
+-------------------
+
 yum install bind-utils ntp nscd
 yum install bind-utils
 yum install ntp
